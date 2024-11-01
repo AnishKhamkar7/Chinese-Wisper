@@ -18,6 +18,7 @@ model User {
   email     String    @unique
   username  String
   password  String
+  //add avatar link
   posts      Post[]     
   responses  Response[] 
   responseVotes ResponseVote[] 
@@ -69,4 +70,5 @@ model PostHistory {
   postId     String      
   content    String   
   editedAt   DateTime @default(now())
+  //Also add version number into the schema
 }
