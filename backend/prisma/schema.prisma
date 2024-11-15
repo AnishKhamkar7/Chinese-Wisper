@@ -14,61 +14,99 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  username  String
-  password  String
-  //add avatar link
-  posts      Post[]     
-  responses  Response[] 
-  responseVotes ResponseVote[] 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt 
+  id               String           @id @default(uuid())
+  email            String           @unique
+  username         String
+  password         String
+  avatar           String?          // Optional avatar link for user
+  posts            Post[]           // User's posts
+  responses        Response[]       // User's responses to posts
+  responseVotes    ResponseVote[]   // Votes on responses
+  createdRooms     DebateRoom[]     // Rooms created by user
+  joinedRooms      RoomParticipant[] // Rooms user has joined
+  messages         Message[]        // Messages sent by the user
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 }
 
 model Post {
-  id             String         @id @default(uuid())
-  title          String
-  initialContent String
-  currentContent String?
-  user           User           @relation(fields: [userId], references: [id])
-  userId         String
-  responses      Response[]
-  responseVotes  ResponseVote[]  // Holds relation with ResponseVote
-  postHistories  PostHistory[]
-  nextEditTime   DateTime
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-}
-
-model ResponseVote {
-  id         String    @id @default(uuid())
-  response   Response  @relation(fields: [responseId], references: [id])
-  responseId String
-  user       User      @relation(fields: [userId], references: [id])
-  userId     String
-  post       Post      @relation(fields: [postId], references: [id]) 
-  postId     String
-  createdAt  DateTime  @default(now())
+  id              String          @id @default(uuid())
+  title           String
+  initialContent  String          // Initial post content
+  currentContent  String?         // Content after edits, if any
+  user            User            @relation(fields: [userId], references: [id])
+  userId          String          // Foreign key to User
+  responses       Response[]      // Responses to the post
+  responseVotes   ResponseVote[]  // Votes on responses related to this post
+  postHistories   PostHistory[]   // History of post edits
+  nextEditTime    DateTime
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 }
 
 model Response {
-  id         String         @id @default(uuid())
-  content    String     
-  user       User        @relation(fields: [userId], references: [id])
-  userId     String      
-  post       Post        @relation(fields: [postId], references: [id])
-  postId     String      
-  responseVotes ResponseVote[]
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id              String          @id @default(uuid())
+  content         String          // The content of the response
+  user            User            @relation(fields: [userId], references: [id])
+  userId          String          // Foreign key to User
+  post            Post            @relation(fields: [postId], references: [id])
+  postId          String          // Foreign key to Post
+  responseVotes   ResponseVote[]  // Votes on this response
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 }
 
-model PostHistory {
-  id         String      @id @default(uuid())
-  post       Post     @relation(fields: [postId], references: [id])
-  postId     String      
-  content    String   
-  editedAt   DateTime @default(now())
-  //Also add version number into the schema
+model ResponseVote {
+  id              String          @id @default(uuid())
+  response        Response        @relation(fields: [responseId], references: [id])
+  responseId      String          // Foreign key to Response
+  user            User            @relation(fields: [userId], references: [id])
+  userId          String          // Foreign key to User
+  post            Post            @relation(fields: [postId], references: [id])
+  postId          String          // Foreign key to Post
+  createdAt       DateTime        @default(now())
+}
+
+model PostHistory { 
+  id              String          @id @default(uuid())
+  post            Post            @relation(fields: [postId], references: [id])
+  postId          String          // Foreign key to Post
+  content         String          // The content of the post at a specific version
+  version         Int             // Version number for the history
+  editedAt        DateTime        @default(now())
+}
+
+model DebateRoom {
+  id              String              @id @default(uuid())
+  title           String              // Title of the debate topic
+  creatorId       String              // Foreign key to User who created the room
+  creator         User                @relation(fields: [creatorId], references: [id])
+  views           Int                 @default(0)  // Count of total views
+  participantLimit Int                // Maximum number of participants allowed in the debate
+  participants    RoomParticipant[]   // Participants in the room
+  messages        Message[]           // Messages in the room
+  isActive        Boolean             @default(true) // Room status (open/closed)
+  closedAt        DateTime?           // Time when room was closed, if applicable
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+}
+
+model RoomParticipant {
+  id              String              @id @default(uuid())
+  userId          String              // Foreign key to User
+  roomId          String              // Foreign key to DebateRoom
+  user            User                @relation(fields: [userId], references: [id])
+  debateRoom      DebateRoom          @relation(fields: [roomId], references: [id])
+  joinedAt        DateTime            @default(now()) // Timestamp for when the user joined the room
+}
+
+model Message {
+  id              String         @id @default(uuid())
+  content         String         // The text content of the message
+  senderId        String         // Foreign key to User who sent the message
+  sender          User           @relation(fields: [senderId], references: [id])
+  roomId          String         // Foreign key to the debate room the message belongs to
+  room            DebateRoom     @relation(fields: [roomId], references: [id])
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 }
