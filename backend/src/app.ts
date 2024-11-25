@@ -4,10 +4,15 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDB from "./db/prisma";
 import errorHandlerMiddleware from "./middleware/errorHandler.middleware";
+import http from "http";
+import { Server } from "socket.io";
 
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+
+const io = new Server(server);
 
 connectDB();
 
