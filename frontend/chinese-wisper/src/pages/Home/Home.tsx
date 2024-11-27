@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { v4 as uuidv4 } from "uuid";
-import { Socket } from "dgram";
 
 const URL = "http://localhost:5000";
 
@@ -25,12 +24,12 @@ interface User {
 
 function Home() {
   const [user, setUser] = useState<User>({
-    id: uuidv4(),
+    id: "",
     username: "",
   });
   const [openDialogue, setOpenDialogue] = useState(true);
   const [error, setError] = useState(false);
-  const [socket, setSocket] = useState<any>();
+  const [socketId, setSocketId] = useState<any>();
 
   const handleSubmit = () => {
     if (user?.username.trim() === "") {
@@ -52,8 +51,9 @@ function Home() {
       const socket = io(URL, {});
       socket.on("connect", () => {
         console.log("Socket Connected");
-        setSocket(socket.id);
+        setSocketId(socket.id);
       });
+      localStorage.setItem("id", socketId);
 
       return () => {
         socket.disconnect();
