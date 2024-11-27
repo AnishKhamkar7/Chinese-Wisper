@@ -13,32 +13,23 @@ import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { v4 as uuidv4 } from "uuid";
 
 const URL = "http://localhost:5000";
 
-interface User {
-  id: string;
-  username: string;
-}
-
 function Home() {
-  const [user, setUser] = useState<User>({
-    id: "",
-    username: "",
-  });
+  const [username, setUserName] = useState("");
   const [openDialogue, setOpenDialogue] = useState(true);
   const [error, setError] = useState(false);
   const [socketId, setSocketId] = useState<any>();
 
   const handleSubmit = () => {
-    if (user?.username.trim() === "") {
+    if (username!.trim() === "") {
       setError(true);
       return;
     }
 
-    localStorage.setItem("username", user.username);
-    localStorage.setItem("id", user.id);
+    localStorage.setItem("username", username);
+    localStorage.setItem("id", socketId);
     setOpenDialogue(false);
   };
 
@@ -46,26 +37,25 @@ function Home() {
     const checkLocalStorage = localStorage.getItem("username");
 
     if (!checkLocalStorage) {
-      console.log("going if");
       setOpenDialogue(true);
       const socket = io(URL, {});
-      socket.on("connect", () => {
+      socket.on("socketId", (data) => {
+        const id = data;
         console.log("Socket Connected");
-        setSocketId(socket.id);
+        setSocketId(id);
       });
-      localStorage.setItem("id", socketId);
 
       return () => {
         socket.disconnect();
       };
     } else {
       setOpenDialogue(false);
-      console.log("going else");
 
-      const userObjName = localStorage.getItem("username");
-      const userObjId = localStorage.getItem("id");
+      const userName = localStorage.getItem("username");
+      const userId = localStorage.getItem("id");
 
-      setUser({ id: userObjId!, username: userObjName! });
+      setUserName(userName!);
+      setSocketId(userId);
     }
   }, []);
 
@@ -96,10 +86,8 @@ function Home() {
                 </Label>
                 <Input
                   id="name"
-                  value={user?.username}
-                  onChange={(e) =>
-                    setUser((prev) => ({ ...prev, username: e.target.value }))
-                  }
+                  value={username}
+                  onChange={(e) => setUserName(e.target.value)}
                   className="col-span-3 outline-black"
                 />
               </div>
@@ -112,7 +100,7 @@ function Home() {
           </DialogContent>
         </Dialog>
       ) : (
-        <h1>Hi {user?.username}</h1>
+        <h1>Hi {username}</h1>
       )}
     </div>
   );
