@@ -13,6 +13,8 @@ import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const URL = "http://localhost:5000";
 
@@ -20,7 +22,11 @@ function Home() {
   const [username, setUserName] = useState("");
   const [openDialogue, setOpenDialogue] = useState(true);
   const [error, setError] = useState(false);
-  const [socketId, setSocketId] = useState<any>();
+  const [socketId, setSocketId] = useState<string>();
+
+  const isRoomDialogue = useSelector(
+    (state: RootState) => state.roomCreateProp.isCreateRoomDialogOpen
+  );
 
   const handleSubmit = () => {
     if (username!.trim() === "") {
@@ -28,13 +34,16 @@ function Home() {
       return;
     }
 
-    localStorage.setItem("username", username);
-    localStorage.setItem("id", socketId);
+    localStorage.setItem(
+      "user",
+      JSON.stringify({ username: username, id: socketId, active: false })
+    );
+
     setOpenDialogue(false);
   };
 
   useEffect(() => {
-    const checkLocalStorage = localStorage.getItem("username");
+    const checkLocalStorage = localStorage.getItem("user");
 
     if (!checkLocalStorage) {
       setOpenDialogue(true);
@@ -51,11 +60,11 @@ function Home() {
     } else {
       setOpenDialogue(false);
 
-      const userName = localStorage.getItem("username");
-      const userId = localStorage.getItem("id");
+      const userData = localStorage.getItem("user");
+      const data = JSON.parse(userData!);
 
-      setUserName(userName!);
-      setSocketId(userId);
+      setUserName(data.username);
+      setSocketId(data.id);
     }
   }, []);
 
@@ -100,7 +109,7 @@ function Home() {
           </DialogContent>
         </Dialog>
       ) : (
-        <h1>Hi {username}</h1>
+        <div></div>
       )}
     </div>
   );
