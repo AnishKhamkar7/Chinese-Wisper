@@ -1,12 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const userData = localStorage.getItem("user");
-const data = JSON.parse(userData!);
-
 const initialState = {
-  userName: data.username || "",
-  socketId: data.id || "",
-  active: data.active || false,
+  userName: null,
+  socketId: null,
+  active: false,
 };
 
 const socketSlicer = createSlice({
