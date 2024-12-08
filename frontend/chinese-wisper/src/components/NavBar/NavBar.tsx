@@ -3,14 +3,13 @@ import SearchBar from "./SearchBar";
 import { HiMenu } from "react-icons/hi";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useSelector } from "react-redux";
-import { useNavigate } from "@tanstack/react-router";
+import { useDispatch, useSelector } from "react-redux";
+
+import { openCreateRoomDialog } from "@/store/roomCreatePropSlicer";
 
 const NavBar = ({ onToggleSidebar }) => {
-  const navigate = useNavigate();
-  const authState = useSelector((state) => state.auth);
-  console.log(authState.isAuthenticated);
-  console.log(authState.data);
+  const authState = useSelector((state: any) => state.auth);
+  const dispatch = useDispatch();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearch, setIsSearch] = useState(false);
@@ -25,8 +24,8 @@ const NavBar = ({ onToggleSidebar }) => {
     }
   };
 
-  const handleSignUp = () => {
-    navigate({ to: "/login" });
+  const handleCreateRoom = () => {
+    dispatch(openCreateRoomDialog());
   };
 
   const onClearSearch = () => {
@@ -68,7 +67,7 @@ const NavBar = ({ onToggleSidebar }) => {
             </Avatar>
           </div>
         ) : (
-          <Button onClick={handleSignUp}>SignUp</Button>
+          <Button onClick={handleCreateRoom}>Create</Button>
         )}
       </div>
     </nav>
