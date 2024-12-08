@@ -20,11 +20,11 @@ const URL = "http://localhost:5000";
 
 function Home() {
   const [username, setUserName] = useState("");
-  const [openDialogue, setOpenDialogue] = useState(true);
+  const [openDialogue, setOpenDialogue] = useState(false);
   const [error, setError] = useState(false);
   const [socketId, setSocketId] = useState<string>();
 
-  const isRoomDialogue = useSelector(
+  const isCreateRoomDialogue = useSelector(
     (state: RootState) => state.roomCreateProp.isCreateRoomDialogOpen
   );
 
