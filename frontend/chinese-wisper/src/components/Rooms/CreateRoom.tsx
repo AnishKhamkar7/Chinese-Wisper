@@ -18,9 +18,10 @@ import { closeCreateRoomDialog } from "@/store/roomCreatePropSlicer";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
-function CreateRoomDialogue() {
+function CreateRoom() {
   const dispatch = useDispatch();
   const [limitValue, setLimitValue] = useState("02");
+  const [roomName, setRoomName] = useState("");
   const [error, setError] = useState(false);
 
   const isCreateRoomDialogue = useSelector(
@@ -66,7 +67,8 @@ function CreateRoomDialogue() {
                 </Label>
                 <Input
                   id="name"
-                  value=""
+                  value={roomName}
+                  onChange={(val) => setRoomName(val.target.value)}
                   className="col-span-3 outline-black"
                 />
               </div>
@@ -96,4 +98,4 @@ function CreateRoomDialogue() {
   );
 }
 
-export default CreateRoomDialogue;
+export default CreateRoom;
