@@ -9,12 +9,13 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Label } from "@radix-ui/react-label";
+import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import CreateRoomDialogue from "@/components/Rooms/CreateRoomDialogue";
 
 const URL = "http://localhost:5000";
 
@@ -27,6 +28,7 @@ function Home() {
   const isCreateRoomDialogue = useSelector(
     (state: RootState) => state.roomCreateProp.isCreateRoomDialogOpen
   );
+  console.log(isCreateRoomDialogue);
 
   const handleSubmit = () => {
     if (username!.trim() === "") {
@@ -70,45 +72,48 @@ function Home() {
 
   return (
     <div>
-      <Dialog open={openDialogue}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Name</DialogTitle>
-            <DialogDescription>
-              Enter your name or generate your name
-              {error && (
-                <Alert variant="destructive" className="border-none">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Error</AlertTitle>
-                  <AlertDescription>
-                    Username should not be empty
-                  </AlertDescription>
-                </Alert>
-              )}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                UserName
-              </Label>
-              <Input
-                id="name"
-                value={username}
-                onChange={(e) => setUserName(e.target.value)}
-                className="col-span-3 outline-black"
-              />
+      {openDialogue && (
+        <Dialog open={openDialogue}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Name</DialogTitle>
+              <DialogDescription>
+                Enter your name or generate your name
+                {error && (
+                  <Alert variant="destructive" className="border-none">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>
+                      Username should not be empty
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  UserName
+                </Label>
+                <Input
+                  id="name"
+                  value={username}
+                  onChange={(e) => setUserName(e.target.value)}
+                  className="col-span-3 outline-black"
+                />
+              </div>
             </div>
-          </div>
-          <DialogFooter>
-            <Button type="button" onClick={handleSubmit}>
-              Save
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button type="button" onClick={handleSubmit}>
+                Save
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {isCreateRoomDialogue && <CreateRoomDialogue />}
     </div>
   );
 }
-
 export default Home;
