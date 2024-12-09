@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import CreateRoomDialogue from "@/components/Rooms/CreateRoomDialogue";
+import CreateRoom from "@/components/Rooms/CreateRoom";
 
 const URL = "http://localhost:5000";
 
@@ -111,7 +111,7 @@ function Home() {
         </Dialog>
       )}
 
-      {isCreateRoomDialogue && <CreateRoomDialogue />}
+      {isCreateRoomDialogue && <CreateRoom />}
     </div>
   );
 }
