@@ -28,7 +28,6 @@ function Home() {
   const isCreateRoomDialogue = useSelector(
     (state: RootState) => state.roomCreateProp.isCreateRoomDialogOpen
   );
-  console.log(isCreateRoomDialogue);
 
   const handleSubmit = () => {
     if (username!.trim() === "") {
