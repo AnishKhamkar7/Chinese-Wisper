@@ -56,14 +56,13 @@ function Home() {
       });
 
       return () => {
-        socket.disconnect();
+        newSocket.disconnect();
       };
     } else {
       setOpenDialogue(false);
 
       const userData = localStorage.getItem("user");
       const data = JSON.parse(userData!);
-
       setUserName(data.username);
       setSocketId(data.id);
     }
@@ -111,7 +110,7 @@ function Home() {
         </Dialog>
       )}
 
-      {isCreateRoomDialogue && <CreateRoom />}
+      {isCreateRoomDialogue && <CreateRoom socket={socket} userId={userId} />}
     </div>
   );
 }
