@@ -21,11 +21,15 @@ export default class RoomManager {
     roomName: string;
     userId: string;
   }) {
-    const createRoom = await client.hmset("room:" + roomName, {
-      userId: userId,
-      limit: limit,
-      roomName: roomName,
-    });
+    const createRoom = await client
+      .multi()
+      .hmset(`room:${roomName}`, {
+        userId: userId,
+        limit: limit,
+        roomName: roomName,
+      })
+      .sadd(`room:${roomName}:members`, userId)
+      .exec();
 
     if (!createRoom) {
       this.io.emit("errorWhileCreatingRoom", "Something Went wrong");
