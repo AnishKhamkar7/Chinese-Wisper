@@ -19,8 +19,15 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { roomData } from "@/store/roomCreatePropSlicer";
 import { activeUser } from "@/store/socketSlicer";
+import { Socket } from "socket.io-client";
 
-function CreateRoom() {
+function CreateRoom({
+  socket,
+  userId,
+}: {
+  socket: any | Socket;
+  userId: string;
+}) {
   const dispatch = useDispatch();
   const [limitValue, setLimitValue] = useState("02");
   const [roomName, setRoomName] = useState("");
@@ -29,8 +36,6 @@ function CreateRoom() {
   const isCreateRoomDialogue = useSelector(
     (state: RootState) => state.roomCreateProp.isCreateRoomDialogOpen
   );
-
-  console.log(isCreateRoomDialogue);
 
   const handleOnChange = (value: string) => {
     setLimitValue(value);
@@ -48,7 +53,7 @@ function CreateRoom() {
       roomData({
         roomName,
         limit: limitValue,
-        createdBy: parsedData.id,
+        createdBy: userId,
       })
     );
     parsedData.active = true;
