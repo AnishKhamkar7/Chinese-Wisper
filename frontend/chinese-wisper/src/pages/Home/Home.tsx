@@ -16,6 +16,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import CreateRoom from "@/components/Rooms/CreateRoom";
+import { Socket } from "socket.io-client";
+import { v4 as uuidv4 } from "uuid";
 
 const URL = "http://localhost:5000";
 
@@ -24,9 +26,15 @@ function Home() {
   const [openDialogue, setOpenDialogue] = useState(false);
   const [error, setError] = useState(false);
   const [socketId, setSocketId] = useState<string>();
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [userId, setUserId] = useState("");
 
   const isCreateRoomDialogue = useSelector(
     (state: RootState) => state.roomCreateProp.isCreateRoomDialogOpen
+  );
+
+  const createRoom = useSelector(
+    (state: RootState) => state.roomCreateProp.data
   );
 
   const handleSubmit = () => {
@@ -35,10 +43,21 @@ function Home() {
       return;
     }
 
+    const id = uuidv4();
+
+    setUserId(id);
+
     localStorage.setItem(
       "user",
-      JSON.stringify({ username: username, id: socketId, active: false })
+      JSON.stringify({
+        username,
+        id,
+        active: false,
+        socketId,
+      })
     );
+
+    console.log(socketId);
 
     setOpenDialogue(false);
   };
@@ -48,8 +67,9 @@ function Home() {
 
     if (!checkLocalStorage) {
       setOpenDialogue(true);
-      const socket = io(URL, {});
-      socket.on("socketId", (data) => {
+      const newSocket = io(URL, {});
+      setSocket(newSocket);
+      newSocket.on("socketId", (data) => {
         const id = data;
         console.log("Socket Connected");
         setSocketId(id);
