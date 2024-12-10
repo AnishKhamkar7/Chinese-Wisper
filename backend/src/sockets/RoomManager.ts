@@ -16,14 +16,17 @@ export default class RoomManager {
     limit,
     roomName,
     userId,
+    roomId,
   }: {
     limit: number;
     roomName: string;
     userId: string;
+    roomId: string;
   }) {
     const createRoom = await client
       .multi()
       .hmset(`room:${roomName}`, {
+        roomId: roomId,
         userId: userId,
         limit: limit,
         roomName: roomName,

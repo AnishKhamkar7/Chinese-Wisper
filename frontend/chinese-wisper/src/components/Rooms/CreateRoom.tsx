@@ -20,6 +20,7 @@ import { RootState } from "@/store/store";
 import { roomData } from "@/store/roomCreatePropSlicer";
 import { activeUser } from "@/store/socketSlicer";
 import { Socket } from "socket.io-client";
+import { v4 as uuidv4 } from "uuid";
 
 function CreateRoom({
   socket,
@@ -62,9 +63,10 @@ function CreateRoom({
 
     dispatch(activeUser());
 
-    console.log(socket);
+    const roomId = uuidv4();
 
     socket.emit("createRoom", {
+      roomId,
       roomName,
       limit: limitValue,
       createdBy: parsedData.id,
