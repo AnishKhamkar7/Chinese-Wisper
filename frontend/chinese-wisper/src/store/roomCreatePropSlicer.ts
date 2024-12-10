@@ -1,7 +1,16 @@
 // store/dialogSlice.ts
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface stateType {
+  isCreateRoomDialogOpen: boolean;
+  data?: {
+    roomName: string;
+    limit: number;
+    createdBy: string;
+  };
+}
+
+const initialState: stateType = {
   isCreateRoomDialogOpen: false,
 };
 
@@ -15,10 +24,13 @@ const dialogSlice = createSlice({
     closeCreateRoomDialog: (state) => {
       state.isCreateRoomDialogOpen = false;
     },
+    roomData: (state, action) => {
+      state.data = action.payload;
+    },
   },
 });
 
-export const { openCreateRoomDialog, closeCreateRoomDialog } =
+export const { openCreateRoomDialog, closeCreateRoomDialog, roomData } =
   dialogSlice.actions;
 
 export default dialogSlice.reducer;
