@@ -21,7 +21,7 @@ export default class RoomManager {
     roomName: string;
     userId: string;
   }) {
-    const createRoom = await client.hmset("room" + roomName, {
+    const createRoom = await client.hmset("room:" + roomName, {
       userId: userId,
       limit: limit,
       roomName: roomName,
