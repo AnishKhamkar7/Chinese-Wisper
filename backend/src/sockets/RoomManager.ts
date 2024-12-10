@@ -1,4 +1,3 @@
-import { create } from "domain";
 import { Redis } from "ioredis";
 
 import { Socket } from "socket.io";
@@ -13,9 +12,17 @@ export default class RoomManager {
     this.socketId = socketId;
   }
 
-  async createRoom({ limit, roomName }: { limit: number; roomName: string }) {
-    const createRoom = await client.hmset("room", {
-      userId: this.socketId,
+  async createRoom({
+    limit,
+    roomName,
+    userId,
+  }: {
+    limit: number;
+    roomName: string;
+    userId: string;
+  }) {
+    const createRoom = await client.hmset("room" + roomName, {
+      userId: userId,
       limit: limit,
       roomName: roomName,
     });
