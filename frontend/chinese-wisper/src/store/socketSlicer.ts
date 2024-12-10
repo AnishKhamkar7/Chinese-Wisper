@@ -15,11 +15,11 @@ const socketSlicer = createSlice({
       state.active = false;
       state.socketId = action.payload;
     },
-    room: (state) => {
+    activeUser: (state) => {
       state.active = true;
     },
   },
 });
 
-export const { login, room } = socketSlicer.actions;
+export const { login, activeUser } = socketSlicer.actions;
 export default socketSlicer.reducer;
