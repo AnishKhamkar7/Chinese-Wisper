@@ -17,6 +17,8 @@ import { useState } from "react";
 import { closeCreateRoomDialog } from "@/store/roomCreatePropSlicer";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { roomData } from "@/store/roomCreatePropSlicer";
+import { activeUser } from "@/store/socketSlicer";
 
 function CreateRoom() {
   const dispatch = useDispatch();
@@ -37,6 +39,24 @@ function CreateRoom() {
     } else {
       setError(false);
     }
+  };
+
+  const handleRoomCreateSubmit = () => {
+    const userData = localStorage.getItem("user");
+    const parsedData = JSON.parse(userData!);
+    dispatch(
+      roomData({
+        roomName,
+        limit: limitValue,
+        createdBy: parsedData.id,
+      })
+    );
+    parsedData.active = true;
+    //might change this later as I will only store active in the context
+    localStorage.setItem("user", JSON.stringify(parsedData));
+
+    dispatch(activeUser());
+    //redirect user to the Room Page
   };
 
   return (
@@ -90,7 +110,9 @@ function CreateRoom() {
             </div>
           </DialogHeader>
           <DialogFooter>
-            <Button type="button">Create</Button>
+            <Button type="button" onClick={() => handleRoomCreateSubmit()}>
+              Create
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
