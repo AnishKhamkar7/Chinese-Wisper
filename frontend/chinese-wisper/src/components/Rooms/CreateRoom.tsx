@@ -56,6 +56,17 @@ function CreateRoom() {
     localStorage.setItem("user", JSON.stringify(parsedData));
 
     dispatch(activeUser());
+
+    console.log(socket);
+
+    socket.emit("createRoom", {
+      roomName,
+      limit: limitValue,
+      createdBy: parsedData.id,
+    });
+    dispatch(closeCreateRoomDialog());
+    console.log(isCreateRoomDialogue);
+
     //redirect user to the Room Page
   };
 
