@@ -7,7 +7,7 @@ const client = new Redis();
 
 interface User {
   userId: string;
-  userName: string;
+  username: string;
   socketId: string;
   RoomId: string | null;
 }
@@ -19,10 +19,10 @@ export default class UserManager {
     this.io = io;
   }
 
-  async createUser({ userId, userName, RoomId, socketId }: User) {
-    const createdUser = await client.hmset("user:" + userName, {
+  async createUser({ userId, username, RoomId, socketId }: User) {
+    const createdUser = await client.hmset(`user:${username}`, {
       userId,
-      userName,
+      username,
       socketId,
       RoomId,
     });
