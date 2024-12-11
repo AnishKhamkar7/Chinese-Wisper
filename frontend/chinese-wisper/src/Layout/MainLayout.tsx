@@ -33,13 +33,9 @@ const MainLayout = () => {
       <div className="flex flex-col w-full">
         <NavBar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-        <div className="flex flex-1">
-          <Sidebar isSidebarOpen={isSidebarOpen} />
-
-          <main className="flex-1">
-            <Outlet />
-          </main>
-        </div>
+        <main className="flex-1">
+          <Outlet />
+        </main>
       </div>
     </div>
   );
