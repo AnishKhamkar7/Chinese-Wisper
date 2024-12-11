@@ -10,7 +10,7 @@ import Register from "@/pages/Auth/Register";
 import AuthLayout from "@/Layout/AuthLayout";
 import Post from "@/pages/Post/Post";
 import { Outlet } from "@tanstack/react-router";
-import { useSelector, UseSelector } from "react-redux";
+import Room from "@/pages/Debate/Room";
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />,
@@ -53,9 +53,15 @@ const postRoute = createRoute({
   component: Post,
 });
 
+const roomRouter = createRoute({
+  getParentRoute: () => mainLayoutRoute,
+  path: "/room/$roomId",
+  component: Room,
+});
+
 const routeTree = rootRoute.addChildren([
   authLayoutRoute.addChildren([loginRoute, registerRoute]),
-  mainLayoutRoute.addChildren([indexRoute, postRoute]),
+  mainLayoutRoute.addChildren([indexRoute, postRoute, roomRouter]),
 ]);
 
 export const router = createRouter({ routeTree });
