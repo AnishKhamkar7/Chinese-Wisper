@@ -13,11 +13,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import CreateRoom from "@/components/Rooms/CreateRoom";
 import { Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
+import { login } from "@/store/socketSlicer";
 
 const URL = "http://localhost:5000";
 
@@ -28,13 +29,10 @@ function Home() {
   const [socketId, setSocketId] = useState<string>();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [userId, setUserId] = useState("");
+  const dispatch = useDispatch();
 
   const isCreateRoomDialogue = useSelector(
     (state: RootState) => state.roomCreateProp.isCreateRoomDialogOpen
-  );
-
-  const createRoom = useSelector(
-    (state: RootState) => state.roomCreateProp.data
   );
 
   const handleSubmit = () => {
@@ -57,9 +55,24 @@ function Home() {
       })
     );
 
+    dispatch(
+      login({
+        userId: id,
+        username,
+        socketId,
+      })
+    );
+
     console.log(socketId);
 
     setOpenDialogue(false);
+
+    socket?.emit("createUser", {
+      userId: id,
+      username,
+      socketId,
+      RoomId: null,
+    });
   };
 
   useEffect(() => {
