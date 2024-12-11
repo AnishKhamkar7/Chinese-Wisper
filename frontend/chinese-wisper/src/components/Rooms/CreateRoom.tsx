@@ -21,6 +21,9 @@ import { roomData } from "@/store/roomCreatePropSlicer";
 import { activeUser } from "@/store/socketSlicer";
 import { Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "../ui/toast";
+import { useNavigate } from "@tanstack/react-router";
 
 function CreateRoom({
   socket,
@@ -33,6 +36,8 @@ function CreateRoom({
   const [limitValue, setLimitValue] = useState("02");
   const [roomName, setRoomName] = useState("");
   const [error, setError] = useState(false);
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   const isCreateRoomDialogue = useSelector(
     (state: RootState) => state.roomCreateProp.isCreateRoomDialogOpen
@@ -40,6 +45,7 @@ function CreateRoom({
 
   const handleOnChange = (value: string) => {
     setLimitValue(value);
+
     if (Number(value) > 20 || Number(value) < 2) {
       setError(true);
     } else {
@@ -69,12 +75,28 @@ function CreateRoom({
       roomId,
       roomName,
       limit: limitValue,
-      createdBy: parsedData.id,
+      userId,
+    });
+
+    socket.on("errorWhileCreatingRoom", (err: string) => {
+      return toast({
+        variant: "destructive",
+        title: err,
+      });
+    });
+
+    socket.on("RoomCreated", (msg: string) => {
+      return toast({
+        title: msg,
+        description: "Completed",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
     });
     dispatch(closeCreateRoomDialog());
     console.log(isCreateRoomDialogue);
-
+    //if a user is expired and tried to created he should be redirected to enter userName again.
     //redirect user to the Room Page
+    navigate({ to: `/room/$roomId`, params: { roomId } });
   };
 
   return (
