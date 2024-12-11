@@ -38,6 +38,6 @@ export default class RoomManager {
       this.io.emit("errorWhileCreatingRoom", "Something Went wrong");
     }
 
-    this.io.emit("RoomCreated", createRoom);
+    this.io.emit("RoomCreated", "Room Created SuccessFully");
   }
 }
