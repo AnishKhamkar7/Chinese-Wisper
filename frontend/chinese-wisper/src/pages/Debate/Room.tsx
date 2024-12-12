@@ -7,11 +7,7 @@ function Room() {
     (state: RootState) => state.socketContext.userName
   );
 
-  return (
-    <div>
-      <RoomMembers />
-    </div>
-  );
+  return <RoomMembers />;
 }
 
 export default Room;
