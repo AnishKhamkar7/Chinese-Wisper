@@ -2,9 +2,8 @@ import { server } from "./app";
 import dotenv from "dotenv";
 import { io } from "./app";
 import RoomManager from "./sockets/RoomManager";
-import data from "./config/env.config";
+
 import UserManager from "./sockets/UserManager";
-import { Socket } from "socket.io";
 
 dotenv.config();
 
@@ -18,7 +17,6 @@ io.on("connection", (socket) => {
 
   socket.on("createUser", (data) => {
     const { userId, socketId, RoomId, username } = data;
-    console.log(userId);
 
     userManager.createUser({ userId, socketId, RoomId, username });
   });
