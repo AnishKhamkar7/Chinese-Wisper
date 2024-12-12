@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  userId: null,
   userName: null,
   socketId: null,
   active: false,
@@ -11,8 +12,8 @@ const socketSlicer = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
+      state.userId = action.payload;
       state.userName = action.payload;
-      state.active = false;
       state.socketId = action.payload;
     },
     activeUser: (state) => {
