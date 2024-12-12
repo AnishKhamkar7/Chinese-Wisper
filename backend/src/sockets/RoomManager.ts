@@ -49,4 +49,13 @@ export default class RoomManager {
     }
     return this.io.emit("getAllRooms", rooms);
   }
+
+  async getARoom({ roomId }: { roomId: string }) {
+    const room = await client.hmget(`room:${roomId}`);
+
+    if (!room) {
+      return this.io.emit("errorWhileRetrievingRoom", "Room Not Found");
+    }
+    return this.io.emit("getARoom", room);
+  }
 }
