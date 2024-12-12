@@ -20,7 +20,7 @@ export default class UserManager {
   }
 
   async createUser({ userId, username, RoomId, socketId }: User) {
-    const createdUser = await client.hmset(`user:${username}`, {
+    const createdUser = await client.hmset(`user:${userId}`, {
       userId,
       username,
       socketId,

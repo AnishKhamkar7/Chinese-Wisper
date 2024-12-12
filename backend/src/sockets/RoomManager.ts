@@ -25,13 +25,13 @@ export default class RoomManager {
   }) {
     const createRoom = await client
       .multi()
-      .hmset(`room:${roomName}`, {
+      .hmset(`room:${roomId}`, {
         roomId: roomId,
         userId: userId,
         limit: limit,
         roomName: roomName,
       })
-      .sadd(`room:${roomName}:members`, userId)
+      .sadd(`room:${roomId}:members`, userId)
       .exec();
 
     if (!createRoom) {
