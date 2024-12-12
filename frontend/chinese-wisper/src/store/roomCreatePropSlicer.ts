@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 interface stateType {
   isCreateRoomDialogOpen: boolean;
   data?: {
+    roomId: string;
     roomName: string;
     limit: number;
     createdBy: string;
