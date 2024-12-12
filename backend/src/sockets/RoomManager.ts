@@ -35,9 +35,18 @@ export default class RoomManager {
       .exec();
 
     if (!createRoom) {
-      this.io.emit("errorWhileCreatingRoom", "Something Went wrong");
+      return this.io.emit("errorWhileCreatingRoom", "Something Went wrong");
     }
 
-    this.io.emit("RoomCreated", "Room Created SuccessFully");
+    return this.io.emit("RoomCreated", "Room Created SuccessFully");
+  }
+
+  async getAllRooms() {
+    const rooms = await client.hmget("room");
+
+    if (!rooms) {
+      return this.io.emit("errorWhileRetrievingRooms", "Something Went wrong");
+    }
+    return this.io.emit("getAllRooms", rooms);
   }
 }
