@@ -54,14 +54,15 @@ const postRoute = createRoute({
 });
 
 const roomRouter = createRoute({
-  getParentRoute: () => mainLayoutRoute,
+  getParentRoute: () => rootRoute,
   path: "/room/$roomId",
   component: Room,
 });
 
 const routeTree = rootRoute.addChildren([
   authLayoutRoute.addChildren([loginRoute, registerRoute]),
-  mainLayoutRoute.addChildren([indexRoute, postRoute, roomRouter]),
+  mainLayoutRoute.addChildren([indexRoute, postRoute]),
+  roomRouter,
 ]);
 
 export const router = createRouter({ routeTree });
