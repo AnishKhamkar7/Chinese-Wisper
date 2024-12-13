@@ -36,6 +36,7 @@ function CreateRoom({
   const [limitValue, setLimitValue] = useState("02");
   const [roomName, setRoomName] = useState("");
   const [error, setError] = useState(false);
+  const [socketConnection] = useState(socket);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -70,22 +71,23 @@ function CreateRoom({
     dispatch(activeUser());
 
     const roomId = uuidv4();
+    console.log(socketConnection);
 
-    socket.emit("createRoom", {
+    socketConnection.emit("createRoom", {
       roomId,
       roomName,
       limit: limitValue,
       userId,
     });
 
-    socket.on("errorWhileCreatingRoom", (err: string) => {
+    socketConnection.on("errorWhileCreatingRoom", (err: string) => {
       return toast({
         variant: "destructive",
         title: err,
       });
     });
 
-    socket.on("RoomCreated", (msg: string) => {
+    socketConnection.on("RoomCreated", (msg: string) => {
       return toast({
         title: msg,
         description: "Completed",
@@ -93,7 +95,7 @@ function CreateRoom({
       });
     });
     dispatch(closeCreateRoomDialog());
-    console.log(isCreateRoomDialogue);
+
     //if a user is expired and tried to created he should be redirected to enter userName again.
     //redirect user to the Room Page
     navigate({ to: `/room/$roomId`, params: { roomId } });
