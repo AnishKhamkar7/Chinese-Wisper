@@ -19,6 +19,8 @@ import CreateRoom from "@/components/Rooms/CreateRoom";
 import { Socket } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import { login } from "@/store/socketSlicer";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import PostSkeleton from "@/components/Posts/PostsLoading";
 
 const URL = "http://localhost:5000";
 
@@ -29,11 +31,41 @@ function Home() {
   const [socketId, setSocketId] = useState<string>();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [userId, setUserId] = useState("");
+  const [rooms, setRooms] = useState<any>();
   const dispatch = useDispatch();
 
   const isCreateRoomDialogue = useSelector(
     (state: RootState) => state.roomCreateProp.isCreateRoomDialogOpen
   );
+
+  const fetchAllRooms = async (): Promise<any> => {
+    console.log(socket);
+
+    socket?.on("getAllRooms", (data) => {
+      return data;
+    });
+  };
+
+  const queryClient = useQueryClient();
+  const query = useQuery({
+    queryKey: ["room"],
+    queryFn: () => fetchAllRooms(),
+  });
+
+  // if (query.isLoading) {
+  //   return <div className="animate-pulse">Loading...</div>;
+  // }
+
+  // if (query.error) {
+  //   return (
+  //     <div>
+  //       <PostSkeleton />
+  //     </div>
+  //   );
+  // }
+
+  const roomCards = query.data;
+  console.log(roomCards);
 
   const handleSubmit = () => {
     if (username!.trim() === "") {
@@ -62,8 +94,6 @@ function Home() {
         socketId,
       })
     );
-
-    console.log(socketId);
 
     setOpenDialogue(false);
 
@@ -94,8 +124,7 @@ function Home() {
     } else {
       setOpenDialogue(false);
 
-      const userData = localStorage.getItem("user");
-      const data = JSON.parse(userData!);
+      const data = JSON.parse(checkLocalStorage!);
       setUserName(data.username);
       setSocketId(data.id);
     }
