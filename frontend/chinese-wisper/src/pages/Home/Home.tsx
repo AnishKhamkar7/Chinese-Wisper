@@ -107,27 +107,26 @@ function Home() {
 
   useEffect(() => {
     const checkLocalStorage = localStorage.getItem("user");
-
+    const newSocket = io(URL, {});
+    setSocket(newSocket);
+    newSocket.on("socketId", (data) => {
+      const id = data;
+      console.log("Socket Connected");
+      setSocketId(id);
+    });
+    //STORE THE SOCKET CONNECTION USING USEREF!!!!!
     if (!checkLocalStorage) {
       setOpenDialogue(true);
-      const newSocket = io(URL, {});
-      setSocket(newSocket);
-      newSocket.on("socketId", (data) => {
-        const id = data;
-        console.log("Socket Connected");
-        setSocketId(id);
-      });
-
-      return () => {
-        newSocket.disconnect();
-      };
     } else {
       setOpenDialogue(false);
-
       const data = JSON.parse(checkLocalStorage!);
       setUserName(data.username);
-      setSocketId(data.id);
+    
+
     }
+    return () => {
+      newSocket.disconnect();
+    };
   }, []);
 
   return (
