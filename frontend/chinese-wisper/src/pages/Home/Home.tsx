@@ -120,9 +120,9 @@ function Home() {
     } else {
       setOpenDialogue(false);
       const data = JSON.parse(checkLocalStorage!);
+      data.socketId = socketId;
+      localStorage.setItem("user", JSON.stringify(data));
       setUserName(data.username);
-    
-
     }
     return () => {
       newSocket.disconnect();
