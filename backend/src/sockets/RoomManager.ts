@@ -42,12 +42,12 @@ export default class RoomManager {
   }
 
   async getAllRooms() {
-    const rooms = await client.hmget("room");
+    const rooms = await client.hgetall("room");
 
     if (!rooms) {
-      return this.io.emit("errorWhileRetrievingRooms", "Something Went wrong");
+      return "Something Went wrong";
     }
-    return this.io.emit("getAllRooms", rooms);
+    return rooms;
   }
 
   async getARoom({ roomId }: { roomId: string }) {
